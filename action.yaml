@@ -1,0 +1,19 @@
+name: 'Build Number'
+description: 'Provides a build number based on the project variables'
+branding:
+  color: purple
+  icon: hash
+inputs:
+  github-token:
+    description: The GitHub token used to create an authenticated client
+    default: ${{ github.token }}
+    required: false
+  debug:
+    description: Whether to tell the GitHub client to log details of its requests. true or false. Default is to run in debug mode when the GitHub Actions step debug logging is turned on.
+    default: ${{ runner.debug == '1' }}
+outputs:
+  build-number:
+    description: 'The build number'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
