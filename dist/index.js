@@ -31924,11 +31924,30 @@ async function main() {
         });
     }
     catch (error) {
-        if (debug) {
-            console.error(error);
+        if (error.status === 404) {
+            try {
+                await github.rest.actions.createRepoVariable({
+                    owner: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner,
+                    repo: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo,
+                    name: 'BUILD_NUMBER',
+                    value: buildNumber.toString(),
+                });
+            }
+            catch (createError) {
+                if (debug) {
+                    console.error(createError);
+                }
+                _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(`Error creating build number: ${createError.message}`);
+                return;
+            }
         }
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(`Error updating build number: ${error.message}`);
-        return;
+        else {
+            if (debug) {
+                console.error(error);
+            }
+            _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(`Error updating build number: ${error.message}`);
+            return;
+        }
     }
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('build-number', buildNumber.toString());
 }

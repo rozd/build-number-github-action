@@ -10,11 +10,11 @@ main().catch(err => {
 
 async function main() {
   const token = core.getInput('github-token', {required: true});
-  const debug = core.getBooleanInput('debug')
+  const debug = core.getBooleanInput('debug');
 
   const opts: OctokitOptions = {
     log: debug ? console : undefined,
-  }
+  };
 
   const github = getOctokit(token, opts);
 
@@ -55,11 +55,28 @@ async function main() {
       value: buildNumber.toString(),
     });
   } catch (error: any) {
-    if (debug) {
-      console.error(error);
+    if (error.status === 404) {
+      try {
+        await github.rest.actions.createRepoVariable({
+          owner: context.repo.owner,
+          repo: context.repo.repo,
+          name: 'BUILD_NUMBER',
+          value: buildNumber.toString(),
+        });
+      } catch (createError: any) {
+        if (debug) {
+          console.error(createError);
+        }
+        core.setFailed(`Error creating build number: ${createError.message}`);
+        return;
+      }
+    } else {
+      if (debug) {
+        console.error(error);
+      }
+      core.setFailed(`Error updating build number: ${error.message}`);
+      return;
     }
-    core.setFailed(`Error updating build number: ${error.message}`);
-    return;
   }
 
   core.setOutput('build-number', buildNumber.toString());
