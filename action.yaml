@@ -1,5 +1,6 @@
-name: 'Build Number'
-description: 'Provides a build number based on the project variables'
+name: 'Repo Build Number'
+description: 'Increments and returns the build number for a repository using `BUILD_NUMBER` repository variable to store the build number.'
+author: 'Max Rozdobudko'
 branding:
   color: purple
   icon: hash
@@ -13,7 +14,7 @@ inputs:
     default: ${{ runner.debug == '1' }}
 outputs:
   build-number:
-    description: 'The build number'
+    description: 'The build number for the repository'
 runs:
   using: 'node20'
   main: 'dist/index.js'

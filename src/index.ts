@@ -1,7 +1,6 @@
 import * as core from '@actions/core';
 import {context, getOctokit} from "@actions/github";
 import {OctokitOptions} from "@octokit/core/dist-types/types";
-import {GitHub} from "@actions/github/lib/utils";
 
 main().catch(err => {
   console.error(err);
